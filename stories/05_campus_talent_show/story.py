@@ -26,6 +26,7 @@ class ShowClock:
         return True
 
 
+
 # ACT 2: Every performance must tell the MC its duration.
 class Performance(ABC):
     venue = "UCU student talent afternoon"  # Class attribute: shared fact.
@@ -78,6 +79,18 @@ class AudienceWave:  # No Performance inheritance: the shared behaviour is enoug
 
     def describe(self):
         return "Audience wave: one minute, everybody gets to be famous."
+
+
+class ThankYouSpeech:
+    # Duck typing lets this act join the show without inheriting Performance.
+    def __init__(self):
+        self.name = "Cedric's thank-you speech"
+
+    def duration(self):
+        return 1
+
+    def describe(self):
+        return f"{self.name}: one minute of gratitude to close the show."
 
 
 # ACT 4: The show HAS-A clock; it borrows and swaps performance objects.
