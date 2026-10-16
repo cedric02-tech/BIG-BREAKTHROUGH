@@ -25,6 +25,13 @@ class ShowClock:
         self.remaining = self.remaining - minutes
         return True
 
+    # Add time only for a positive extension.
+    def extend(self, minutes):
+        if minutes <= 0:
+            return False
+        self.remaining = self.remaining + minutes
+        return True
+
 
 
 # ACT 2: Every performance must tell the MC its duration.
@@ -79,6 +86,9 @@ class AudienceWave:  # No Performance inheritance: the shared behaviour is enoug
 
     def describe(self):
         return "Audience wave: one minute, everybody gets to be famous."
+
+
+
 
 
 # ACT 4: The show HAS-A clock; it borrows and swaps performance objects.
