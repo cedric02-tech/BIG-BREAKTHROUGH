@@ -25,6 +25,13 @@ class ShowClock:
         self.remaining = self.remaining - minutes
         return True
 
+    # Add time only for a positive extension.
+    def extend(self, minutes):
+        if minutes <= 0:
+            return False
+        self.remaining = self.remaining + minutes
+        return True
+
 
 
 # ACT 2: Every performance must tell the MC its duration.
@@ -81,16 +88,7 @@ class AudienceWave:  # No Performance inheritance: the shared behaviour is enoug
         return "Audience wave: one minute, everybody gets to be famous."
 
 
-class ThankYouSpeech:
-    # Duck typing lets this act join the show without inheriting Performance.
-    def __init__(self):
-        self.name = "Cedric's thank-you speech"
 
-    def duration(self):
-        return 1
-
-    def describe(self):
-        return f"{self.name}: one minute of gratitude to close the show."
 
 
 # ACT 4: The show HAS-A clock; it borrows and swaps performance objects.
@@ -112,6 +110,16 @@ class TalentShow:
             self._lineup.append(performance)  # Collaborating objects in a collection.
             return f"MC {self.mc} books {performance.name}."
         return f"No slot for {performance.name}. The timetable has entered the chat."
+
+    def running_order(self):
+        # Report the lineup and remaining time without changing the show.
+        names = [performance.name for performance in self._lineup]
+        return {
+            "names": names,
+            "count": self.act_count,
+            "minutes_left": self.clock.remaining,
+            "message": "No acts booked." if not names else None,
+        }
 
 
 def audition(performances):  # Week 1's function, parameters, list, and loop.
@@ -142,3 +150,24 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# EXTENSION 1: COMEDY DUO
+class Comedy(Performance):
+    # Comedy is a Performance whose set always lasts two minutes.
+    def duration(self):
+        return 2
+
+
+def run_comedy_extension():
+    comedy = Comedy("Comedy duo")
+    audition_list = [comedy]
+    audition(audition_list)
+
+    show = TalentShow("Joel", 5)
+    print(show.book(comedy))
+    print(f"Minutes left: {show.clock.remaining}; acts booked: {show.act_count}")
+
+
+if __name__ == "__main__":
+    run_comedy_extension()
