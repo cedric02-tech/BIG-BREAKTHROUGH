@@ -20,7 +20,7 @@ class ShowClock:
         self.__remaining = amount
 
     def reserve(self, minutes):
-        if minutes <= 0 or minutes > self.remaining:
+        if minutes < 0 or minutes > self.remaining:
             return False
         self.remaining = self.remaining - minutes
         return True
@@ -92,6 +92,18 @@ class AudienceWave:  # No Performance inheritance: the shared behaviour is enoug
 
 
 # ACT 4: The show HAS-A clock; it borrows and swaps performance objects.
+class ShowChoiceError(Exception):
+    """Raised when no choice is supplied for a booking."""
+
+
+class ShowRequestError(Exception):
+    """Raised when a choice calculates an invalid requirement."""
+
+
+class ShowResourceError(Exception):
+    """Raised when a valid requirement exceeds the remaining show time."""
+
+
 class TalentShow:
     def __init__(self, mc, minutes):
         self.mc = mc
@@ -120,6 +132,22 @@ class TalentShow:
             "minutes_left": self.clock.remaining,
             "message": "No acts booked." if not names else None,
         }
+
+
+class StrictTalentShow(TalentShow):
+    def safe_book(self, choice):
+        if choice is None:
+            raise ShowChoiceError("Choose a performance before booking.")
+
+        minutes = choice.duration()
+        if minutes < 0:
+            raise ShowRequestError("A performance cannot require negative minutes.")
+        if minutes > self.clock.remaining:
+            raise ShowResourceError(
+                f"The performance needs {minutes} minutes, but only "
+                f"{self.clock.remaining} remain."
+            )
+        return self.book(choice)
 
 
 def audition(performances):  # Week 1's function, parameters, list, and loop.
