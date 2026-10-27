@@ -68,6 +68,13 @@ class ShortDance(Dance):  # Performance -> Dance -> ShortDance: multilevel.
         return super().duration() // 2  # Extend a parent's implementation.
 
 
+class LightningDance(ShortDance):
+    """A short dance that never advertises less than one minute."""
+
+    def duration(self):
+        return max(1, super().duration() - 1)
+
+
 # ACT 3: One extra capability joins the existing dance family.
 class ApplauseMixin:
     def describe(self):
