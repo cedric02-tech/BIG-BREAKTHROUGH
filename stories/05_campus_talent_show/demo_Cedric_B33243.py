@@ -27,7 +27,16 @@ def main():
     print(f"Developer: {three_thousand!r}")
     print(f"Equal: {three_thousand == another_three_thousand}; "
           f"unequal: {three_thousand != five_hundred}")
-    print(f"Addition: {total}; operands: {three_thousand}, {five_hundred}")
+    print(f"Addition: {total}; operands unchanged: "
+          f"{three_thousand.amount == 3000 and five_hundred.amount == 500}")
+
+    try:
+        three_thousand.amount = 99
+    except AttributeError as error:
+        print(f"Read-only amount: refused ({error})")
+
+    print(f"Unsupported equality: {StageTime.__eq__(three_thousand, 3000) is NotImplemented}")
+    print(f"Unsupported addition: {StageTime.__add__(three_thousand, 3000) is NotImplemented}")
 
     invalid_values = (-1, 1.5, True)
     for invalid in invalid_values:
